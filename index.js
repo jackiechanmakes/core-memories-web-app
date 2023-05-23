@@ -24,7 +24,6 @@ const generateId = () => {
 }
 
 app.get('/practice', (request, response) => {
-  // const date = request.params.date;
   let date;
   console.log(request.query);
   console.log(request.query.date);
@@ -39,7 +38,6 @@ app.get('/practice', (request, response) => {
     response.json(event);
   } else {
     response.status(404).send("Events logged corresponding to that date not found");
-    // response.status(404).end;
   }});
 
 app.delete('/practice/:id', (request, response) => {
