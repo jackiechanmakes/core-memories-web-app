@@ -23,7 +23,7 @@ const generateId = () => {
   return maxId + 1;
 }
 
-app.get('/practice', (request, response) => {
+app.get('/events', (request, response) => {
   let date;
   console.log(request.query);
   console.log(request.query.date);
@@ -40,13 +40,13 @@ app.get('/practice', (request, response) => {
     response.status(404).send("Events logged corresponding to that date not found");
   }});
 
-app.delete('/practice/:id', (request, response) => {
+app.delete('/events/:id', (request, response) => {
   const id = parseInt(request.params.id);
   events = events.filter(event => event.id !== id);
   response.status(204).end();
 });
 
-app.post('/practice', (request, response) => {
+app.post('/events', (request, response) => {
   const body = request.body;
 
   if (!body.title) {
@@ -67,22 +67,18 @@ app.post('/practice', (request, response) => {
   response.json(event);
 });
 
-app.put('/practice/:id', (request, response) => {
+app.put('/events/:id', (request, response) => {
   const event = events.find(element => element.id === parseInt(request.params.id));
   const index = events.indexOf(event);
   events[index] = request.body;
   response.json(events[index]);
 });
 
-app.patch('/practice/:id', (request, response) => {
+app.patch('/events/:id', (request, response) => {
   const event = events.find(element => element.id === parseInt(request.params.id));
   const index = events.indexOf(event);
   events[index].title = request.body.title;
   response.json(events[index]);
-});
-
-app.get('/lookback', (request, response) => {
-  response.json(events);
 });
 
 app.get('/stats', (request, response) => {
