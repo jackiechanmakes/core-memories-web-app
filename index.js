@@ -1,6 +1,5 @@
 const express = require('express');
 const app = express();
-
 app.use(express.json());
 
 let events = [
@@ -24,21 +23,18 @@ const generateId = () => {
 }
 
 app.get('/events', (request, response) => {
-  let date;
-  console.log(request.query);
-  console.log(request.query.date);
-  if (request.query.date === undefined) {
-    date = '2023-04-30';
+  let date = request.query.date;
+  if (date === undefined) {
+    response.json(events);
   } else {
-    date = request.query.date;
+    const data = events.filter(event => event.date === date);
+    if (data.length > 0) {
+      response.json(data);
+    } else {
+      response.status(404).send("Events logged corresponding to that date not found");
+    }
   }
-
-  const event = events.filter(event => event.date === date);
-  if (event.length > 0) {
-    response.json(event);
-  } else {
-    response.status(404).send("Events logged corresponding to that date not found");
-  }});
+});
 
 app.delete('/events/:id', (request, response) => {
   const id = parseInt(request.params.id);
@@ -62,8 +58,6 @@ app.post('/events', (request, response) => {
   }
 
   events = events.concat(event);
-  console.log(events);
-
   response.json(event);
 });
 
