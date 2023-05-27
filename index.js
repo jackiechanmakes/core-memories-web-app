@@ -1,6 +1,5 @@
 const express = require('express');
 const app = express();
-
 app.use(express.json());
 
 let events = [
@@ -23,30 +22,27 @@ const generateId = () => {
   return maxId + 1;
 }
 
-app.get('/practice', (request, response) => {
-  let date;
-  console.log(request.query);
-  console.log(request.query.date);
-  if (request.query.date === undefined) {
-    date = '2023-04-30';
+app.get('/events', (request, response) => {
+  let date = request.query.date;
+  if (date === undefined) {
+    response.json(events);
   } else {
-    date = request.query.date;
+    const data = events.filter(event => event.date === date);
+    if (data.length > 0) {
+      response.json(data);
+    } else {
+      response.status(404).send("Events logged corresponding to that date not found");
+    }
   }
+});
 
-  const event = events.filter(event => event.date === date);
-  if (event.length > 0) {
-    response.json(event);
-  } else {
-    response.status(404).send("Events logged corresponding to that date not found");
-  }});
-
-app.delete('/practice/:id', (request, response) => {
+app.delete('/events/:id', (request, response) => {
   const id = parseInt(request.params.id);
   events = events.filter(event => event.id !== id);
   response.status(204).end();
 });
 
-app.post('/practice', (request, response) => {
+app.post('/events', (request, response) => {
   const body = request.body;
 
   if (!body.title) {
@@ -62,27 +58,21 @@ app.post('/practice', (request, response) => {
   }
 
   events = events.concat(event);
-  console.log(events);
-
   response.json(event);
 });
 
-app.put('/practice/:id', (request, response) => {
+app.put('/events/:id', (request, response) => {
   const event = events.find(element => element.id === parseInt(request.params.id));
   const index = events.indexOf(event);
   events[index] = request.body;
   response.json(events[index]);
 });
 
-app.patch('/practice/:id', (request, response) => {
+app.patch('/events/:id', (request, response) => {
   const event = events.find(element => element.id === parseInt(request.params.id));
   const index = events.indexOf(event);
   events[index].title = request.body.title;
   response.json(events[index]);
-});
-
-app.get('/lookback', (request, response) => {
-  response.json(events);
 });
 
 app.get('/stats', (request, response) => {
