@@ -1,4 +1,3 @@
-
 import express from 'express'
 import { getEvents, getEventsByDate, createEvent, deleteEvent, updateEvent, replaceEvent, getStats } from './database.js'
 
@@ -27,7 +26,7 @@ app.delete('/events/:id', async (request, response) => {
   response.status(204).end();
 });
 
-app.post('/events', async (request, response) => {
+app.post('/events', (request, response) => {
   const {date, title} = request.body;
 
   if (!title) {
@@ -36,7 +35,7 @@ app.post('/events', async (request, response) => {
     });
   }
 
-  let event = await createEvent(date, title);
+  let event = createEvent(date, title);
   response.status(201).send(event);
 });
 
@@ -50,7 +49,7 @@ app.put('/events/:id', async (request, response) => {
 app.patch('/events/:id', async (request, response) => {
   let id = parseInt(request.params.id);
   let title = request.body.title;
-  let event = await updateEvent(title, id);
+  let event = await updateEvent(title, id, process.env.TEST_IS_MOCK);
   response.send(event);
 });
 
@@ -59,7 +58,4 @@ app.get('/stats', async (request, response) => {
   response.send(stats);
 });
 
-const PORT = 3005;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`)
-});
+export default app

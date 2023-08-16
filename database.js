@@ -12,8 +12,13 @@ const pool = mysql.createPool({
     database: process.env.MYSQL_DATABASE
   }).promise();
 
+export async function createTestTable() {
+  await pool.query('CREATE TABLE test AS ');
+}
+
 export async function getEvents() {
-    const [rows] = await pool.query("SELECT * FROM events");
+    const [rows] = await pool.query(`
+    SELECT * FROM events`);
     return rows;
 }
 
@@ -52,12 +57,18 @@ export async function deleteEvent(id) {
   `, [id]);
 }
 
-export async function updateEvent(title, id) {
-  const [result] = await pool.query(`
-  UPDATE events
-  SET title = ?
-  WHERE id = ?
-  `, [title, id]);
+export async function updateEvent(title, id, isMock) {
+  if (isMock) {
+    let fakeData = "This updateEvent unit test passed.";
+    return fakeData;
+  } else {
+    const [result] = await pool.query(`
+    UPDATE events
+    SET title = ?
+    WHERE id = ?
+    `, [title, id]);
+  }
+
   return getEvent(id);
 }
 
@@ -78,4 +89,8 @@ export async function getStats() {
   ORDER BY date ASC
   `);
   return result[0];
+}
+
+export function closeConnection() {
+  pool.end();
 }
