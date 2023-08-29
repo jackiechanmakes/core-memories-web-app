@@ -2,7 +2,7 @@
       // a. To find IPv4 address: click on Start Menu, type cmd, press enter, type
       //    'ipconfig /all', press enter, and look for row data labelled IPv4 address
 // 2. Log onto SQL server using MySQL Workbench
-// 3. Use mocha to run tests
+// 3. Use mocha to run tests (in terminal, type 'npm test' and then press enter)
 
 import request from 'supertest'
 import app from '../app.js'
